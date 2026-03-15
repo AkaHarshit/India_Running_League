@@ -20,4 +20,13 @@ export const runnerData = {
   distance_to_next_rank: 3, // mock calculation
 };
 
+// Weekly activity with day labels
+export const weeklyActivity = [
+  { day: "Mon", distance: mockData.weekly_runs[0] },
+  { day: "Tue", distance: mockData.weekly_runs[1] },
+  { day: "Wed", distance: mockData.weekly_runs[2], isRest: true },
+  { day: "Thu", distance: mockData.weekly_runs[3] },
+  { day: "Fri", distance: mockData.weekly_runs[4] },
+];
+
 export default runnerData;
