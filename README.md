@@ -125,6 +125,3 @@ All data derives from `mockData.js`. Computed fields (remaining distance, progre
 - **useCallback** for event handlers
 - **requestAnimationFrame** for animated counters (60fps)
 
-## 📄 License
-
-MIT
