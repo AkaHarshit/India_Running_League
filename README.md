@@ -1,21 +1,23 @@
 # 🏃 Runner Progress Dashboard
 
-A clean, modern fitness dashboard UI that visualizes a runner's progress in the **India Running League (IRL)** challenge. Built as a single-page React application with responsive design and smooth animations.
+A professional, mobile-responsive fitness dashboard for the **India Running League (IRL)** challenge. Built with React + Vite + Tailwind CSS + Recharts. Features multi-page routing, dark mode, animated counters, and advanced state management.
 
 ## 🖼️ Screenshots
 
 > Add screenshots here after running the project.
 >
-> - Full dashboard view
-> - Mobile responsive view
+> - Dashboard view (light & dark mode)
+> - Leaderboard page with search/filter
+> - Run history with trend chart
 
 ## 🛠️ Tech Stack
 
 | Technology | Purpose |
 |---|---|
-| **React** | UI framework |
-| **Vite** | Build tool & dev server |
+| **React 19** | UI framework |
+| **Vite 8** | Build tool & dev server |
 | **Tailwind CSS v3** | Utility-first styling |
+| **React Router v7** | Client-side routing |
 | **Recharts** | Chart visualization |
 | **Lucide React** | Icon library |
 
@@ -26,15 +28,30 @@ runner-progress-dashboard/
 ├── src/
 │   ├── components/
 │   │   ├── RunnerInfo.jsx          # Runner details card
-│   │   ├── ProgressBar.jsx         # Linear progress bar with stats
+│   │   ├── ProgressBar.jsx         # Linear progress bar with animated stats
 │   │   ├── CircularProgress.jsx    # SVG circular progress ring
 │   │   ├── WeeklyActivity.jsx      # Recharts bar chart
-│   │   └── LeaderboardCard.jsx     # Leaderboard snapshot card
+│   │   ├── LeaderboardCard.jsx     # Leaderboard snapshot card
+│   │   ├── GoalSetter.jsx          # Goal form with validation
+│   │   ├── Navbar.jsx              # Responsive nav with mobile menu
+│   │   ├── Skeleton.jsx            # Loading skeleton placeholders
+│   │   ├── ErrorBoundary.jsx       # Error boundary with retry
+│   │   └── ToastContainer.jsx      # Toast notification renderer
+│   ├── context/
+│   │   ├── ThemeContext.jsx         # Dark mode Context + localStorage
+│   │   └── ToastContext.jsx         # Toast notification state (useReducer)
+│   ├── hooks/
+│   │   ├── useLocalStorage.js       # Persistent state with cross-tab sync
+│   │   └── useAnimatedCounter.js    # Count-up animation via rAF
+│   ├── pages/
+│   │   ├── DashboardPage.jsx        # Main dashboard view
+│   │   ├── LeaderboardPage.jsx      # Full leaderboard with sort/filter
+│   │   └── HistoryPage.jsx          # 30-day trend chart
 │   ├── data/
-│   │   └── mockData.js             # Static mock data + computed fields
-│   ├── App.jsx                     # Main dashboard layout
-│   ├── main.jsx                    # React entry point
-│   └── index.css                   # Tailwind imports + custom animations
+│   │   └── mockData.js              # Mock data + computed fields
+│   ├── App.jsx                      # Router + providers + layout
+│   ├── main.jsx                     # React entry point
+│   └── index.css                    # Tailwind + custom animations
 ├── tailwind.config.js
 ├── postcss.config.js
 ├── vite.config.js
@@ -46,8 +63,8 @@ runner-progress-dashboard/
 
 ```bash
 # Clone the repository
-git clone <repo-url>
-cd runner-progress-dashboard
+git clone https://github.com/AkaHarshit/India_Running_League.git
+cd India_Running_League
 
 # Install dependencies
 npm install
@@ -60,30 +77,53 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## 📊 Features
 
-- **Runner Info Card** — Name, challenge, and tier badge
-- **Linear Progress Bar** — Animated gradient bar with target/completed/remaining stats
-- **Circular Progress** — SVG ring with animated stroke and percentage display
+### Core Dashboard
+- **Runner Info Card** — Name, challenge, and tier badge with color mapping
+- **Linear Progress Bar** — Animated gradient bar with shimmer + stat cards
+- **Circular Progress** — SVG ring with gradient stroke animation
 - **Weekly Activity Chart** — Recharts bar chart with rest day differentiation
-- **Leaderboard Snapshot** — Rank, top runner distance, distance to next rank
-- **Responsive Design** — Works on desktop, tablet, and mobile
-- **Smooth Animations** — CSS transitions, keyframe animations, hover effects
+- **Leaderboard Snapshot** — Rank, top runner, distance to next rank
+
+### Advanced Features
+- **🌙 Dark Mode** — Toggle via ThemeContext + localStorage persistence
+- **🧭 Multi-Page Routing** — Dashboard, Leaderboard, History (React Router)
+- **📊 Run History** — 30-day trend with area/line chart toggle + date range filter
+- **🏆 Full Leaderboard** — 20 runners with search, sort (rank/name/distance), tier filter
+- **🎯 Goal Setter** — Form with validation, add/remove goals, toast feedback
+- **🔔 Toast Notifications** — Custom notification system (useReducer)
+- **⏳ Loading Skeletons** — Placeholder UI during page transitions (Suspense)
+- **🛡️ Error Boundaries** — Graceful error handling with retry
+- **⚡ Performance** — React.memo, useMemo, useCallback, lazy loading
+- **📱 Responsive Navigation** — Mobile hamburger menu
+- **🎬 Animated Counters** — Count-up numbers via requestAnimationFrame
+- **🔗 Code Splitting** — Lazy-loaded page chunks
 
 ## 📝 Design Decisions
 
 ### Component Structure
-The app follows a modular component architecture. Each dashboard section is its own isolated component receiving data via props, making the code easy to read, test, and extend. `App.jsx` acts as the layout orchestrator.
+Modular architecture with three layers: **pages** (route-level), **components** (reusable UI), and **data** (mock layer). Each component is wrapped with `React.memo` and receives data via props.
+
+### State Management
+- **ThemeContext** (Context API) — dark mode preference
+- **ToastContext** (useReducer) — notification queue
+- **useLocalStorage** (custom hook) — persistent user preferences with cross-tab sync
+- **Component-level state** — form data, filters, sorting in GoalSetter and LeaderboardPage
 
 ### Data Flow
-All data flows from a single `mockData.js` file. Computed fields (remaining distance, progress percentage) are calculated once at the data layer, not inside components. This keeps components pure and focused on rendering.
+All data derives from `mockData.js`. Computed fields (remaining distance, progress %) are calculated at the data layer. Pages receive data as props from `App.jsx`, avoiding prop drilling for global concerns via Context API.
 
 ### Visualization Choices
-- **Linear progress bar** gives an intuitive at-a-glance sense of completion
-- **Circular progress** provides a more engaging, dashboard-style metric
-- **Recharts BarChart** was chosen for the weekly activity because bar charts are the most natural way to compare discrete daily values
-- Rest days are visually distinguished with grey bars and a custom tooltip
+- **Dual progress** (linear bar + circular ring) — intuitive distance tracking + dashboard metric
+- **Recharts BarChart** — daily activity comparison
+- **Area/Line chart toggle** — 30-day trend with average reference line
+- **Sortable table** — full leaderboard with rank highlighting
 
-### Styling
-Tailwind CSS v3 with a custom green/blue fitness theme ensures visual consistency. Cards use subtle shadows and rounded corners for a modern feel. Animations are CSS-only (no JS libraries) to keep the bundle small.
+### Performance Optimizations
+- **React.lazy** + **Suspense** for route-based code splitting
+- **React.memo** on all leaf components
+- **useMemo** for filtered/sorted data
+- **useCallback** for event handlers
+- **requestAnimationFrame** for animated counters (60fps)
 
 ## 📄 License
 
