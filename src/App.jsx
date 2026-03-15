@@ -2,10 +2,12 @@ import { Activity } from "lucide-react";
 import RunnerInfo from "./components/RunnerInfo";
 import ProgressBar from "./components/ProgressBar";
 import CircularProgress from "./components/CircularProgress";
-import { runnerData } from "./data/mockData";
+import WeeklyActivity from "./components/WeeklyActivity";
+import LeaderboardCard from "./components/LeaderboardCard";
+import { runnerData, weeklyActivity } from "./data/mockData";
 
 function App() {
-  const { runner, challenge, tier, target_distance, completed_distance, remaining_distance, progress_percentage } = runnerData;
+  const { runner, challenge, tier, target_distance, completed_distance, remaining_distance, progress_percentage, rank, top_runner_distance, distance_to_next_rank } = runnerData;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -37,6 +39,10 @@ function App() {
           <div className="md:col-span-1">
             <CircularProgress percentage={progress_percentage} />
           </div>
+        </section>
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <WeeklyActivity data={weeklyActivity} />
+          <LeaderboardCard rank={rank} topRunnerDistance={top_runner_distance} distanceToNextRank={distance_to_next_rank} />
         </section>
       </main>
     </div>
