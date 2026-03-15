@@ -1,6 +1,12 @@
 import { Activity } from "lucide-react";
+import RunnerInfo from "./components/RunnerInfo";
+import ProgressBar from "./components/ProgressBar";
+import CircularProgress from "./components/CircularProgress";
+import { runnerData } from "./data/mockData";
 
 function App() {
+  const { runner, challenge, tier, target_distance, completed_distance, remaining_distance, progress_percentage } = runnerData;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
@@ -21,7 +27,17 @@ function App() {
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <p className="text-gray-500">Dashboard sections coming soon...</p>
+        <section className="mb-6">
+          <RunnerInfo runner={runner} challenge={challenge} tier={tier} />
+        </section>
+        <section className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2">
+            <ProgressBar target={target_distance} completed={completed_distance} remaining={remaining_distance} percentage={progress_percentage} />
+          </div>
+          <div className="md:col-span-1">
+            <CircularProgress percentage={progress_percentage} />
+          </div>
+        </section>
       </main>
     </div>
   );
